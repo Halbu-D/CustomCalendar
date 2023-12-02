@@ -16,6 +16,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import java.text.SimpleDateFormat
+import java.time.LocalDate
 
 class NotiActivity : AppCompatActivity() {
 
@@ -31,6 +33,9 @@ class NotiActivity : AppCompatActivity() {
     val email = user?.email.toString()
 
     private val friendList = mutableListOf<FriendModel>()
+
+    // 오늘 날짜
+    val currentDate = LocalDate.now().minusDays(4)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +80,11 @@ class NotiActivity : AppCompatActivity() {
                     val item = dataModel.getValue(CalendarModel::class.java)
 
                     if(email == item?.email) { // 시작일 일치, 중복 아닌 경우
-                        notiList.add(item!!)
+                        if(currentDate.toString()  < item!!.startDate.toString()) {
+                            notiList.add(item!!)
+                            Log.d(TAG, currentDate.toString())
+                            Log.d(TAG, item!!.startDate.toString())
+                        }
                     }
 
                     for(list in friendList) {
