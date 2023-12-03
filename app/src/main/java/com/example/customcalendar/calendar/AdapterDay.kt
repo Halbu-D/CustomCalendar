@@ -44,6 +44,7 @@ import java.util.Timer
 import kotlin.concurrent.schedule
 
 
+@Suppress("DEPRECATION")
 class AdapterDay(val tempMonth:Int, val dayList: MutableList<Date>, val height:Int, val holiday:MutableList<HolidayModel>, val friendList: MutableList<FriendModel>): RecyclerView.Adapter<AdapterDay.DayView>() {
     val ROW = 6
     var selectedDate = LocalDate.now()

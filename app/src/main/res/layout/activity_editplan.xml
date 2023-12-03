@@ -61,7 +61,7 @@
                 android:textSize="20sp"
                 android:background="?attr/selectableItemBackground"
                 android:gravity="center"
-                android:text="yy년MM월dd일" />
+                android:text="23-10-10" />
 
             <TextView
                 android:id="@+id/endDate"
@@ -71,7 +71,7 @@
                 android:textSize="20sp"
                 android:background="?attr/selectableItemBackground"
                 android:gravity="center"
-                android:text="yy년MM월dd일" />
+                android:text="23-10-10" />
 
 
         </LinearLayout>
