@@ -22,12 +22,16 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class PlaneditActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditplanBinding
     private  val TAG = IndividualActivity::class.java.simpleName
     private lateinit var selectedbtn: String
     private lateinit var key:String
+    private val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private val timeFormat = SimpleDateFormat("HH시mm분", Locale.getDefault())
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +42,15 @@ class PlaneditActivity : AppCompatActivity() {
         key = intent.getStringExtra("keyValue").toString()
 
         getPlan(key)
+
+        val startDate = binding.startDate
+        val endDate =  binding.endDate
+
+        var startText = startDate.text.toString()
+        var endText = endDate.text.toString()
+
+        var startTime = binding.startTime.text.toString()
+        var endTime = binding.endTime.text.toString()
 
         //findViewById<TextView>(R.id.startDate).text = intent.getStringExtra("day").toString()
         //findViewById<TextView>(R.id.endDate).text = intent.getStringExtra("day").toString()
@@ -53,9 +66,18 @@ class PlaneditActivity : AppCompatActivity() {
             acceptButton.setOnClickListener {// 확인 버튼 처리
                 val selectedYear = dPicker.year.toString()
                 val selectedMonth = (dPicker.month + 1).toString() // 0부터 시작하므로 1을 더해야 실제 월을 얻을 수 있음.
-                val selectedDay = dPicker.dayOfMonth.toString()
+                val selectedDay = when(dPicker.dayOfMonth){
+                    in 1..9 -> "0" + dPicker.dayOfMonth.toString()
+                    else -> dPicker.dayOfMonth.toString()
+                }
                 //Log.d(TAG, "Selected Date: $selectedDate")
-                findViewById<TextView>(R.id.startDate).text = selectedYear + "-" + selectedMonth +"-"+ selectedDay
+                startText = selectedYear + "-" + selectedMonth +"-"+ selectedDay
+                startDate.text = startText
+
+                if(formatter.parse(startText.toString()).time > formatter.parse(endText.toString()).time){
+                    endText = startText
+                    endDate.text = startText // 시작일이 종료일보다 크면 안 됨
+                }
                 startAlertDialog.dismiss()
                 //Toast.makeText(this, "수락", Toast.LENGTH_SHORT).show()
             }
@@ -76,9 +98,18 @@ class PlaneditActivity : AppCompatActivity() {
             acceptButton.setOnClickListener {// 확인 버튼 처리
                 val selectedYear = dPicker.year.toString()
                 val selectedMonth = (dPicker.month + 1).toString() // 0부터 시작하므로 1을 더해야 실제 월을 얻을 수 있음.
-                val selectedDay = dPicker.dayOfMonth.toString()
+                val selectedDay = when(dPicker.dayOfMonth){
+                    in 1..9 -> "0" + dPicker.dayOfMonth.toString()
+                    else -> dPicker.dayOfMonth.toString()
+                }
 
-                findViewById<TextView>(R.id.endDate).text = selectedYear + "-" + selectedMonth +"-"+ selectedDay
+                endText = selectedYear + "-" + selectedMonth +"-"+ selectedDay
+                endDate.text = endText
+
+                if(formatter.parse(startText.toString()).time > formatter.parse(endText.toString()).time){
+                    startText = endText
+                    startDate.text = endText // 종료일이 시작일보다 작은 경우
+                }
                 endAlertDialog.dismiss()
 
             }
@@ -97,9 +128,25 @@ class PlaneditActivity : AppCompatActivity() {
             val closeButton = View.findViewById<Button>(R.id.closeButton)
 
             acceptButton.setOnClickListener {// 확인 버튼 처리
-                val selectedhour = tPicker.hour.toString()
-                val selectedmin = tPicker.minute.toString()
-                findViewById<TextView>(R.id.startTime).text = selectedhour + "시 " + selectedmin + "분"
+                val selectedhour = when(tPicker.hour){
+                    in 0..9 -> "0" + tPicker.hour.toString()
+                    else ->tPicker.hour.toString()
+                }
+                val selectedmin = when(tPicker.minute){
+                    in 0..9 -> "0" + tPicker.minute.toString()
+                    else -> tPicker.minute.toString()
+                }
+
+                startTime = selectedhour + "시" + selectedmin + "분"
+                binding.startTime.text = startTime
+
+                if(formatter.parse(startText).time == formatter.parse(endText).time){
+                    if(timeFormat.parse(startTime).time > timeFormat.parse(endTime).time){
+                        endTime = startTime
+                        binding.endTime.text = startTime
+                    }
+                }
+
                 endAlertDialog.dismiss()
             }
             closeButton.setOnClickListener {// 취소버튼 처리
@@ -117,9 +164,25 @@ class PlaneditActivity : AppCompatActivity() {
             val closeButton = View.findViewById<Button>(R.id.closeButton)
 
             acceptButton.setOnClickListener {// 확인 버튼 처리
-                val selectedhour = tPicker.hour.toString()
-                val selectedmin = tPicker.minute.toString()
-                findViewById<TextView>(R.id.endTime).text = selectedhour + "시 " + selectedmin + "분"
+                val selectedhour = when(tPicker.hour){
+                    in 0..9 -> "0" + tPicker.hour.toString()
+                    else ->tPicker.hour.toString()
+                }
+                val selectedmin = when(tPicker.minute){
+                    in 0..9 -> "0" + tPicker.minute.toString()
+                    else -> tPicker.minute.toString()
+                }
+
+                endTime = selectedhour + "시" + selectedmin + "분"
+
+                binding.endTime.text = endTime
+
+                if(formatter.parse(startText.toString()).time == formatter.parse(endText.toString()).time){ //시작일 종료일 같을때만
+                    if(timeFormat.parse(startTime.toString()).time > timeFormat.parse(endTime.toString()).time){
+                        startTime = endTime
+                        binding.startTime.text = endTime
+                    }
+                }
                 endAlertDialog.dismiss()
             }
             closeButton.setOnClickListener {// 취소버튼 처리
