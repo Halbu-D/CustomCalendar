@@ -34,7 +34,7 @@ class NotiActivity : AppCompatActivity() {
 
     private val friendList = mutableListOf<FriendModel>()
 
-    // 오늘 날짜
+    // 오늘 날짜에서 4일을 뺀값
     val currentDate = LocalDate.now().minusDays(4)
 
 
