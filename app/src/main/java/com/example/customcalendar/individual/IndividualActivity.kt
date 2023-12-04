@@ -1,6 +1,9 @@
 package com.example.customcalendar.individual
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -8,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.DatePicker
+import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.TimePicker
 import android.widget.Toast
@@ -50,6 +54,18 @@ class IndividualActivity : AppCompatActivity() {
         var endText = endDate.text.toString()
         var startTime = "09시00분"
         var endTime = "09시10분"
+
+        val radioButtonH: RadioButton = findViewById(R.id.high)
+        val radioButtonN: RadioButton = findViewById(R.id.normal)
+        val radioButtonL: RadioButton = findViewById(R.id.low)
+
+        val colorStateList = ColorStateList.valueOf(Color.BLACK) // 원하는 색상으로 변경하세요.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            radioButtonH.buttonTintList = colorStateList
+            radioButtonN.buttonTintList = colorStateList
+            radioButtonL.buttonTintList = colorStateList
+        }
+
 
         binding.startDate.setOnClickListener { // 시작 날짜 설정
             val startView = LayoutInflater.from(this).inflate(R.layout.select_date, null)
